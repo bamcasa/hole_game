@@ -41,20 +41,26 @@ class hole_game:
         self.make_answer_square()
 
     def make_answer_square(self):
-
         # 답 사각형 초기화
         for i in range(self.square_size):
             for j in range(self.square_size):
                 self.correct_square[i][j] = 0
 
         sum = 0
+        check = 0 # 정답 유무 체크용 -> 변수명 바꿔야 할 듯...
         for i in range(self.square_size):
             for j in range(self.square_size):
                 for k in range(self.square_count):
                     sum += self.square[k][i][j]
                 if(sum == self.square_count):
                     self.correct_square[i][j] = 1
+                    check += 1 # 정답있을 때 1 증가
                 sum = 0
+
+        if check == 0:
+            pprint.pprint("정답 없으므로 재추첨")
+            self.make_square()
+
         pprint.pprint(self.correct_square)
 
     def show_answer_square(self):
