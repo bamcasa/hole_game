@@ -14,9 +14,10 @@ class hole_game:
         self.screen_size = (500, 850)
         self.square_size = 3
         self.square_count = 3
-        self.square_number = 0
+        self.square_number = -1
         self.hole = []
         self.correct_hole = []
+        self.start = False
         self.location = np.zeros((self.square_size,self.square_size),dtype = object)
         self.input = np.zeros((self.square_size,self.square_size))
         self.font = pygame.font.SysFont("notosanscjkkr", 30)
@@ -29,14 +30,16 @@ class hole_game:
         pygame.draw.rect(self.screen, (243, 216, 141),(0, 0, self.screen_size[0], self.screen_size[1])) #모든 화면 노란색으로 채우기
 
     def show_square(self):
-        self.screen.blit(self.font.render(f"number {self.square_number + 1}", True, (50, 255, 255)), (215, 20))
         pygame.draw.rect(self.screen, (222, 255, 222), [50, 50, 400, 400])
         pygame.draw.rect(self.screen, (255, 255, 255), [50, 50, 400, 400], 5)  #테두리
-        for i in range(self.square_size):
-            for j in range(self.square_size):
-                if self.square[self.square_number][j][i]:
-                    pygame.draw.circle(self.screen, (255, 255, 255), [i * 150 + 100, j * 150 + 100], 40)
-                    pygame.draw.circle(self.screen, (190, 190, 190), [i * 150 + 100, j * 150 + 100], 40, 2)
+        if self.start:
+            self.screen.blit(self.font.render(f"number {self.square_number + 1}", True, (50, 255, 255)), (215, 20))
+            for i in range(self.square_size):
+                for j in range(self.square_size):
+                    if self.square[self.square_number][j][i]:
+                        pygame.draw.circle(self.screen, (255, 255, 255), [i * 150 + 100, j * 150 + 100], 40)
+                        pygame.draw.circle(self.screen, (190, 190, 190), [i * 150 + 100, j * 150 + 100], 40, 2)
+
     def make_correct_hole(self, hole_count):
         self.correct_hole = []
         count = 0
@@ -110,20 +113,27 @@ class hole_game:
                         self.input[i][j] = 0
                     else:
                         self.input[i][j] = 1
+    def gamestart(self):
+        self.start = True
+        time.sleep(1)
+        self.square_number += 1
+        if (self.square_number >= self.square_count):
+            self.start = False
+
     def main(self):
         clock = pygame.time.Clock()
         self.make_square(2) # 3번마다 사각형 값 초기화,1~9까지의 랜덤값 입력
         while True:
             clock.tick(self.FPS)
+            if self.start:
+                self.gamestart()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
-                    self.square_number += 1
-                    if(self.square_number >= self.square_count):
-                        self.make_square(2) # 3번마다 사각형 값 초기화,1~9까지의 랜덤값 입력
-                        self.square_number = 0
+                    self.gamestart()
+
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.pos = pygame.mouse.get_pos()
                     self.click(self.pos)
