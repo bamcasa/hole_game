@@ -2,6 +2,7 @@ import pygame
 import sys
 import random
 import numpy as np
+import copy
 import time
 import pprint
 
@@ -15,6 +16,7 @@ class hole_game:
         self.square_count = 3
         self.square_number = 0
         self.hole = []
+        self.correct_hole = []
         self.font = pygame.font.SysFont("notosanscjkkr", 30)
         self.screen = pygame.display.set_mode(self.screen_size)
         self.square = np.zeros((self.square_count, self.square_size, self.square_size))
@@ -33,12 +35,25 @@ class hole_game:
                 if self.square[self.square_number][j][i]:
                     pygame.draw.circle(self.screen, (255, 255, 255), [i * 150 + 100, j * 150 + 100], 40)
                     pygame.draw.circle(self.screen, (190, 190, 190), [i * 150 + 100, j * 150 + 100], 40, 2)
+    def make_correct_hole(self, hole_count):
+        self.correct_hole = []
+        count = 0
+        while (True):
+            hole_x = random.randrange(0, self.square_size)
+            hole_y = random.randrange(0, self.square_size)
+            if [hole_y, hole_x] not in self.correct_hole:
+                self.correct_hole.append([hole_y, hole_x])
+                count += 1
+            if count == hole_count:
+                break
+        print("correct_hole : ",self.correct_hole)
+
 
     def make_square(self,hole_count): #원하는 구멍의 개수 입력
         self.square = np.zeros((self.square_count, self.square_size, self.square_size)) #종이 초기화
-
+        self.make_correct_hole(4)
         for k in range(self.square_count):
-            self.hole = []
+            self.hole = copy.deepcopy(self.correct_hole)
             count = 0
             while (True):
                 hole_x = random.randrange(0, self.square_size)  # 뚫린 구멍의 x좌표 생성
@@ -48,18 +63,9 @@ class hole_game:
                     count += 1
                 if count == hole_count:
                     break
-            """
-            for i in range(hole_count): #원하는 구멍의 개수만큼 반복
-                hole_x = random.randrange(0, self.square_size) #뚫린 구멍의 x좌표 생성
-                hole_y = random.randrange(0, self.square_size) #뚫린 구멍의 y좌표 생성
-                hole.append([hole_y,hole_x]) #뚫린 구멍의 좌표를 리스트에 넣음
-            for문으로 시도하다가 포기함
-            이유 : [[1, 1], [1, 1], [0, 2], [0, 0], [1, 1]]와 같이 중복된 값이 들어갈경우 
-                   다시 반복을 시켜야하는데 해결 방법을 못찾음
-            """
             print(self.hole)
 
-            for i in range(hole_count):
+            for i in range(hole_count + len(self.correct_hole)):
                 self.square[k][self.hole[i][0]][self.hole[i][1]] = 1
 
         self.make_answer_square()
@@ -81,7 +87,7 @@ class hole_game:
 
         if check == 0:
             print("정답 없으므로 재추첨")
-            self.make_square(4) # 3번마다 사각형 값 초기화,1~9까지의 랜덤값 입력
+            self.make_square(2) # 3번마다 사각형 값 초기화,1~9까지의 랜덤값 입력
 
         #pprint.pprint(self.correct_square)
 
@@ -96,7 +102,7 @@ class hole_game:
 
     def main(self):
         clock = pygame.time.Clock()
-        self.make_square(4) # 3번마다 사각형 값 초기화,1~9까지의 랜덤값 입력
+        self.make_square(2) # 3번마다 사각형 값 초기화,1~9까지의 랜덤값 입력
         while True:
             clock.tick(self.FPS)
             for event in pygame.event.get():
@@ -106,7 +112,7 @@ class hole_game:
                 if event.type == pygame.KEYDOWN:
                     self.square_number += 1
                     if(self.square_number >= self.square_count):
-                        self.make_square(4) # 3번마다 사각형 값 초기화,1~9까지의 랜덤값 입력
+                        self.make_square(2) # 3번마다 사각형 값 초기화,1~9까지의 랜덤값 입력
                         self.square_number = 0
             self.show_background()
             self.show_square()
