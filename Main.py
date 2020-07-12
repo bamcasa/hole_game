@@ -17,6 +17,8 @@ class hole_game:
         self.square_number = 0
         self.hole = []
         self.correct_hole = []
+        self.location = np.zeros((self.square_size,self.square_size),dtype = object)
+        self.input = np.zeros((self.square_size,self.square_size))
         self.font = pygame.font.SysFont("notosanscjkkr", 30)
         self.screen = pygame.display.set_mode(self.screen_size)
         self.square = np.zeros((self.square_count, self.square_size, self.square_size))
@@ -96,10 +98,18 @@ class hole_game:
         pygame.draw.rect(self.screen, (255, 255, 255), [100, 500, 300, 300], 5)  # 테두리
         for i in range(self.square_size):
             for j in range(self.square_size):
-                if self.correct_square[j][i]:
+                if self.input[i][j]:
                     pygame.draw.circle(self.screen, (255, 255, 255), [i * 100 + 150, j * 100 + 550], 30)
-                    pygame.draw.circle(self.screen, (190, 190, 190), [i * 100 + 150, j * 100 + 550], 30, 2)
-
+                self.location[i][j] = pygame.draw.circle(self.screen, (190, 190, 190), [i * 100 + 150, j * 100 + 550],
+                                                         30, 2)
+    def click(self,pos):
+        for i in range(self.square_size):
+            for j in range(self.square_size):
+                if self.location[i][j].collidepoint(pos):
+                    if self.input[i][j] == 1:
+                        self.input[i][j] = 0
+                    else:
+                        self.input[i][j] = 1
     def main(self):
         clock = pygame.time.Clock()
         self.make_square(2) # 3번마다 사각형 값 초기화,1~9까지의 랜덤값 입력
@@ -114,6 +124,9 @@ class hole_game:
                     if(self.square_number >= self.square_count):
                         self.make_square(2) # 3번마다 사각형 값 초기화,1~9까지의 랜덤값 입력
                         self.square_number = 0
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.pos = pygame.mouse.get_pos()
+                    self.click(self.pos)
             self.show_background()
             self.show_square()
             self.show_answer_square()
