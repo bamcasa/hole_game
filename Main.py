@@ -37,10 +37,11 @@ class hole_game:
                 if self.square[self.square_number][j][i]:
                     pygame.draw.circle(self.screen, (255, 255, 255), [i * 150 + 100, j * 150 + 100], 40)
                     pygame.draw.circle(self.screen, (190, 190, 190), [i * 150 + 100, j * 150 + 100], 40, 2)
+
     def make_correct_hole(self, hole_count):
         self.correct_hole = []
         count = 0
-        while (True):
+        while True:
             hole_x = random.randrange(0, self.square_size)
             hole_y = random.randrange(0, self.square_size)
             if [hole_y, hole_x] not in self.correct_hole:
@@ -57,7 +58,7 @@ class hole_game:
         for k in range(self.square_count):
             self.hole = copy.deepcopy(self.correct_hole)
             count = 0
-            while (True):
+            while True:
                 hole_x = random.randrange(0, self.square_size)  # 뚫린 구멍의 x좌표 생성
                 hole_y = random.randrange(0, self.square_size)  # 뚫린 구멍의 y좌표 생성
                 if [hole_y, hole_x] not in self.hole:
@@ -70,27 +71,20 @@ class hole_game:
             for i in range(hole_count + len(self.correct_hole)):
                 self.square[k][self.hole[i][0]][self.hole[i][1]] = 1
 
-        self.make_answer_square()
+        #self.make_answer_square()
 
     def make_answer_square(self):
         # 답 사각형 초기화
         self.correct_square = np.zeros((self.square_size, self.square_size))
 
         sum = 0
-        check = 0 # 정답 유무 체크용 -> 변수명 바꿔야 할 듯...
         for i in range(self.square_size):
             for j in range(self.square_size):
                 for k in range(self.square_count):
                     sum += self.square[k][i][j]
                 if(sum == self.square_count):
                     self.correct_square[i][j] = 1
-                    check += 1 # 정답있을 때 1 증가
                 sum = 0
-
-        if check == 0:
-            print("정답 없으므로 재추첨")
-            self.make_square(2) # 3번마다 사각형 값 초기화,1~9까지의 랜덤값 입력
-
         #pprint.pprint(self.correct_square)
 
     def show_answer_square(self):
@@ -110,6 +104,7 @@ class hole_game:
                         self.input[i][j] = 0
                     else:
                         self.input[i][j] = 1
+
     def main(self):
         clock = pygame.time.Clock()
         self.make_square(2) # 3번마다 사각형 값 초기화,1~9까지의 랜덤값 입력
@@ -121,7 +116,7 @@ class hole_game:
                     sys.exit()
                 if event.type == pygame.KEYDOWN:
                     self.square_number += 1
-                    if(self.square_number >= self.square_count):
+                    if self.square_number >= self.square_count:
                         self.make_square(2) # 3번마다 사각형 값 초기화,1~9까지의 랜덤값 입력
                         self.square_number = 0
                 if event.type == pygame.MOUSEBUTTONDOWN:
