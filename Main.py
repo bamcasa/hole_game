@@ -20,7 +20,7 @@ class hole_game:
         self.correct_hole = []
         self.start = False
         self.button = True
-        self.location = np.zeros((self.square_size, self.square_size), dtype = object)
+        self.location = np.zeros((self.square_size, self.square_size), dtype=object)
         self.input = np.zeros((self.square_size, self.square_size))
         self.font = pygame.font.SysFont("notosanscjkkr", 30)
         self.screen = pygame.display.set_mode(self.screen_size)
@@ -29,17 +29,17 @@ class hole_game:
         pygame.display.set_caption("Hole game")
 
     def show_background(self):
-        pygame.draw.rect(self.screen, (71, 66, 60), (0, 0, self.screen_size[0], self.screen_size[1])) #모든 화면 노란색으로 채우기
+        pygame.draw.rect(self.screen, (71, 66, 60), (0, 0, self.screen_size[0], self.screen_size[1])) # 배경 채우기
 
     def show_square(self):
-        pygame.draw.rect(self.screen, (240, 235, 229), [50, 50, 400, 400])
-        pygame.draw.rect(self.screen, (190, 190, 190), [50, 50, 400, 400], 5)  #테두리
+        pygame.draw.rect(self.screen, (240, 235, 229), [50, 40, 400, 400])
+        pygame.draw.rect(self.screen, (190, 190, 190), [50, 40, 400, 400], 5) # 테두리
         if self.start:
-            self.screen.blit(self.font.render(f"number {self.square_number + 1}", True, (50, 255, 255)), (215, 20))
+            self.screen.blit(self.font.render(f"Page {self.square_number + 1}", True, (240, 235, 229)), (220, 10))
             for i in range(self.square_size):
                 for j in range(self.square_size):
                     if self.square[self.square_number][j][i]:
-                        pygame.draw.circle(self.screen, (0, 0, 0), [i * 150 + 100, j * 150 + 100], 40)
+                        pygame.draw.circle(self.screen, (0, 0, 0), [i * 150 + 100, j * 150 + 90], 40)
 
     def make_correct_hole(self, hole_count):
         self.correct_hole = []
@@ -55,17 +55,17 @@ class hole_game:
         print("correct_hole : ", self.correct_hole)
 
 
-    def make_square(self, hole_count): #원하는 구멍의 개수 입력
-        self.square = np.zeros((self.square_count, self.square_size, self.square_size)) #종이 초기화
+    def make_square(self, hole_count): # 원하는 구멍의 개수 입력
+        self.square = np.zeros((self.square_count, self.square_size, self.square_size)) # 종이 초기화
         self.make_correct_hole(2)
         for k in range(self.square_count):
             self.hole = copy.deepcopy(self.correct_hole)
             count = 0
             while True:
-                hole_x = random.randrange(0, self.square_size)  # 뚫린 구멍의 x좌표 생성
-                hole_y = random.randrange(0, self.square_size)  # 뚫린 구멍의 y좌표 생성
+                hole_x = random.randrange(0, self.square_size) # 뚫린 구멍의 x좌표 생성
+                hole_y = random.randrange(0, self.square_size) # 뚫린 구멍의 y좌표 생성
                 if [hole_y, hole_x] not in self.hole:
-                    self.hole.append([hole_y, hole_x])  # 뚫린 구멍의 좌표를 리스트에 넣음
+                    self.hole.append([hole_y, hole_x]) # 뚫린 구멍의 좌표를 리스트에 넣음
                     count += 1
                 if count == hole_count:
                     break
@@ -92,16 +92,16 @@ class hole_game:
 
         if check == 0:
             print("정답 없으므로 재추첨")
-            self.make_square(2) # 3번마다 사각형 값 초기화,1~9까지의 랜덤값 입력
+            self.make_square(2) # 3번마다 사각형 값 초기화, 1 ~ 9까지의 랜덤값 입력
 
     def show_answer_square(self):
-        pygame.draw.rect(self.screen, (240, 235, 229), [100, 500, 300, 300])
-        pygame.draw.rect(self.screen, (190, 190, 190), [100, 500, 300, 300], 5)  # 테두리
+        pygame.draw.rect(self.screen, (240, 235, 229), [100, 472, 300, 300])
+        pygame.draw.rect(self.screen, (190, 190, 190), [100, 472, 300, 300], 5)  # 테두리
         for i in range(self.square_size):
             for j in range(self.square_size):
                 if self.input[j][i]:
-                    pygame.draw.circle(self.screen, (71, 66, 60), [i * 100 + 150, j * 100 + 550], 30)
-                self.location[i][j] = pygame.draw.circle(self.screen, (0, 0, 0), [i * 100 + 150, j * 100 + 550], 30, 2)
+                    pygame.draw.circle(self.screen, (71, 66, 60), [i * 100 + 150, j * 100 + 522], 30)
+                self.location[i][j] = pygame.draw.circle(self.screen, (0, 0, 0,), [i * 100 + 150, j * 100 + 522], 30, 2)
 
     def click(self,pos):
         if self.inputbutton.collidepoint(pos):
@@ -117,7 +117,7 @@ class hole_game:
     def show_inputbutton(self):
         if self.button:
             self.inputbutton = pygame.draw.rect(self.screen, (190, 190, 190), [0, 800, 500, 100])
-            self.screen.blit(self.font.render("Input", True, (0, 0, 0)), (220, 845))
+            self.screen.blit(pygame.font.SysFont("notosanscjkkr", 50).render("Input", True, (0, 0, 0)), (205, 835))
 
     def gamestart(self):
         self.start = True
@@ -128,7 +128,7 @@ class hole_game:
             self.start = False
 
     def examine_input(self):
-        if (self.input==self.correct_square).all(): #입력값과 정답이 같은지 비교
+        if (self.input==self.correct_square).all(): # 입력값과 정답값 비교
             self.answer = 1
         else:
             self.answer = 2
@@ -145,7 +145,7 @@ class hole_game:
 
     def main(self):
         clock = pygame.time.Clock()
-        self.make_square(2) # 3번마다 사각형 값 초기화,1~9까지의 랜덤값 입력
+        self.make_square(2) # 3번마다 사각형 값 초기화, 1 ~ 9까지의 랜덤값 입력
         while True:
             clock.tick(self.FPS)
             if self.start:
