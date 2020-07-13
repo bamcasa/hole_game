@@ -149,11 +149,11 @@ class HoleGame:
         if self.answer == 1:
             pygame.draw.rect(self.screen, BLACK, rect_position)
             pygame.draw.rect(self.screen, WHITE, rect_position, 5)  # 테두리
-            self.screen.blit(self.font.render("YES", True, BLACK), font_position)
+            self.screen.blit(self.font.render("YES", True, WHITE), font_position)
         elif self.answer == 2:
             pygame.draw.rect(self.screen, BLACK, rect_position)
             pygame.draw.rect(self.screen, WHITE, rect_position, 5)  # 테두리
-            self.screen.blit(self.font.render("NO", True, BLACK), font_position)
+            self.screen.blit(self.font.render("NO", True, WHITE), font_position)
 
     def main(self):
         clock = pygame.time.Clock()
